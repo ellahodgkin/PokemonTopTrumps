@@ -1,9 +1,30 @@
+// all declacred globally, when set in functions they are still stored globally
 
 let characters = [];
 const weight = "weight";
+const height = "height";
 let gameResult = ""; 
+let playerCharacter = [];
+let computerCharacter = [];
+let chosenStat = "";
+
+
 
 console.log("JS file is connected!");
+
+const playerName = document.getElementById("player-name");
+const computerName = document.getElementById("computer-name");
+
+const playerWeightButton = document.getElementById("player-weight-btn");
+const computerWeightButton = document.getElementById("computer-weight-btn");
+
+const playerHeightButton = document.getElementById("player-height-btn");
+const computerHeightButton = document.getElementById("computer-height-btn");
+
+const result = document.getElementById("result"); 
+
+//const statButton = document.getElementsByClassName("stat-btn");
+
 
 async function loadCharacters() {
   try {
@@ -14,26 +35,17 @@ async function loadCharacters() {
 
     console.log("data.results:", data.results)
 
-    // .map() goes through every item and does something to it
-    // pokemon = "i"
-    // pokemon.url = fetch each individual url 
-    // .then() when response comes back convert it to json
-    // promise = array of 200 unfinished fetch requests
-
     const promises = data.results.map(pokemon =>
       fetch(pokemon.url)
       .then(res => res.json())
     );
 
-    // Promise.all = takes 200 and waits for each of them to finish
-    // hands back an array of 200 results in order which gets stored in characters
     characters = await Promise.all(promises);
-
-    const drawButton = document.getElementById("draw-btn");
-    drawButton.addEventListener('click', playRound);
 
     console.log("Total characters:", characters.length);
     console.log("Example pokemon:", characters[0]);
+
+    setUpGame(); 
 
   } catch (error) {
     console.log("Something went wrong:", error);
@@ -42,7 +54,26 @@ async function loadCharacters() {
 
 loadCharacters();
 
-// it isn't about where the fuction is defined it's where it's called
+
+function setUpGame() {
+
+  const drawButton = document.getElementById("draw-btn");
+  drawButton.addEventListener('click', drawCards);
+
+  const statButton = document.querySelectorAll(".stat-btn");
+
+  console.log("stat button:", statButton);
+  // node list of buttons
+
+  statButton.forEach( btn => {
+    btn.addEventListener('click', () => {
+      chosenStat = btn.dataset.stat;
+      compareStats(chosenStat);
+    });
+  });
+
+};
+
 
 function randomCharacter () {
   let randomChar;
@@ -59,42 +90,73 @@ function randomCharacter () {
   }
 };
 
-const playerName = document.getElementById("player-name");
-const computerName = document.getElementById("computer-name");
 
-const playerWeightButton = document.getElementById("player-weight-btn");
-const computerWeightButton = document.getElementById("computer-weight-btn")
+function drawCards() {
 
-const result = document.getElementById("result"); 
+  console.log("drawing cards...");
 
-
-function playRound() {
-
-  console.log("Playing a round...");
-
-  let playerCharacter = randomCharacter();
-  let computerCharacter = randomCharacter();
+  playerCharacter = randomCharacter();
+  computerCharacter = randomCharacter();
 
   let playerWeightStatistic = playerCharacter[weight];
   let computerWeightStatistic = computerCharacter[weight];
+  let playerHeightStatistic = playerCharacter[height];
+  let computerHeightStatistic = computerCharacter[height];
 
   console.log("Player weight:", playerWeightStatistic);
-  console.log("Copmuter weight:", computerWeightStatistic);
+  console.log("Computer weight:", computerWeightStatistic);
 
-  playerWeightButton.textContent = `Weight: ${playerWeightStatistic}`;
   playerName.textContent = playerCharacter.name;
+  playerWeightButton.textContent = `Weight: ${playerWeightStatistic}`;
+  playerHeightButton.textContent = `Height: ${playerHeightStatistic}`;
+  
   computerName.textContent = computerCharacter.name;
   computerWeightButton.textContent = `Weight: ${computerWeightStatistic}`;
+  computerHeightButton.textContent = `Height: ${computerHeightStatistic}`;
 
-  // older cahracter wins
-  if (playerWeightStatistic > computerWeightStatistic) {
+
+  // compareStats(playerWeightStatistic, computerWeightStatistic);
+}
+
+
+
+function compareStats(chosenStat) {
+
+  let playerStat = playerCharacter[chosenStat];
+  let computerStat = computerCharacter[chosenStat];
+
+  console.log("playerStat:", playerStat);
+
+  console.log("About to compare statistics...");
+
+  if (playerStat > computerStat) {
     gameResult = "Player has won!";
-  } else if (playerWeightStatistic < computerWeightStatistic) {
+  } else if (playerStat < computerStat) {
     gameResult = "Computer has won!"
   } else {
     gameResult = "It's a draw!";
   };
 
+  console.log("result:", gameResult);
   result.textContent = gameResult;
 
+  // what each stat button calls
+  //compares who won
+  // showResult()
+
+  // updateScrore()
 };
+
+function showResult(result) {
+  // reveal card
+  // display result 
+};
+
+function updateScore() {
+  // increments scrore variable and updates display
+  // checkWinner()
+};
+
+function checkWinner() {
+  // checks first to 5
+}

@@ -3,23 +3,30 @@
 <head>
   <meta charset="UTF-8">
   <title>Top Trumps</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-  <h1>Harry Potter Top Trumps</h1>
+  <h1 id="main-heading">Pokemon Top Trumps</h1>
 
   <button id="draw-btn">Draw Characters</button>
 
-  <div id="player">
+  <div id="cards">
+
+  <div id="player" class="card">
     <h2>Player</h2>
     <p id="player-name"></p>
     <button class="stat-btn" id="player-weight-btn" data-stat="weight"></button>
+    <button class="stat-btn" id="player-height-btn" data-stat="height"></button>
   </div>
 
-  <div id="computer">
+  <div id="computer" class="card">
     <h2>Computer</h2>
     <p id="computer-name"></p>
     <button class="stat-btn" id="computer-weight-btn" data-stat="weight"></button>
+    <button class="stat-btn" id="computer-height-btn" data-stat="height"></button>
+  </div>
+
   </div>
 
   <h2 id="result"></h2>
