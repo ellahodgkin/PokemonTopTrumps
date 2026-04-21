@@ -12,24 +12,38 @@
   <button id="draw-btn">Draw Characters</button>
 
   <div id="cards">
+    <div id="player" class="card">
+      <div class="card-inner">
+        <div class="card-front">
+          <h2>Player</h2>
+          <p id="player-name"></p>
+          <button class="stat-btn" id="player-weight-btn" data-stat="weight"></button>
+          <button class="stat-btn" id="player-height-btn" data-stat="height"></button>
+        </div>
+        <div class="card-back">
+          <h2> Top Trumps </h2>
+        </div>
+      </div>
+    </div>
 
-  <div id="player" class="card">
-    <h2>Player</h2>
-    <p id="player-name"></p>
-    <button class="stat-btn" id="player-weight-btn" data-stat="weight"></button>
-    <button class="stat-btn" id="player-height-btn" data-stat="height"></button>
-  </div>
-
-  <div id="computer" class="card">
-    <h2>Computer</h2>
-    <p id="computer-name"></p>
-    <button class="stat-btn" id="computer-weight-btn" data-stat="weight"></button>
-    <button class="stat-btn" id="computer-height-btn" data-stat="height"></button>
-  </div>
-
+    <div id="computer" class="card">
+      <div class="card-inner">
+        <div class="card-front">
+          <h2>Computer</h2>
+          <p id="computer-name"></p>
+          <button class="stat-btn" id="computer-weight-btn" data-stat="weight"></button>
+          <button class="stat-btn" id="computer-height-btn" data-stat="height"></button>
+        </div>
+        <div class="card-back">
+          <h2> Top Trumps </h2>
+        </div>
+      </div>
+    </div>
   </div>
 
   <h2 id="result"></h2>
+
+  <p id="score-board"></p>
 
   <script src="script.js"></script>
 </body>
