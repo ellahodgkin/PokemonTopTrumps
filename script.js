@@ -8,9 +8,14 @@ let playerCharacter = [];
 let computerCharacter = [];
 let chosenStat = "";
 
+let playerScore = 0;
+let computerScore = 0;
 
 
 console.log("JS file is connected!");
+
+const playerCard = document.getElementById("player");
+const computerCard = document.getElementById("computer");
 
 const playerName = document.getElementById("player-name");
 const computerName = document.getElementById("computer-name");
@@ -23,7 +28,12 @@ const computerHeightButton = document.getElementById("computer-height-btn");
 
 const result = document.getElementById("result"); 
 
+const scoreBoard = document.getElementById("score-board");
+
 //const statButton = document.getElementsByClassName("stat-btn");
+
+playerCard.classList.add("flipped");
+computerCard.classList.add("flipped");
 
 
 async function loadCharacters() {
@@ -60,7 +70,7 @@ function setUpGame() {
   const drawButton = document.getElementById("draw-btn");
   drawButton.addEventListener('click', drawCards);
 
-  const statButton = document.querySelectorAll(".stat-btn");
+  const statButton = document.querySelectorAll("#player .stat-btn");
 
   console.log("stat button:", statButton);
   // node list of buttons
@@ -93,10 +103,14 @@ function randomCharacter () {
 
 function drawCards() {
 
+  resetCards();
+
   console.log("drawing cards...");
 
   playerCharacter = randomCharacter();
   computerCharacter = randomCharacter();
+
+  playerCard.classList.remove("flipped");
 
   let playerWeightStatistic = playerCharacter[weight];
   let computerWeightStatistic = computerCharacter[weight];
@@ -114,9 +128,9 @@ function drawCards() {
   computerWeightButton.textContent = `Weight: ${computerWeightStatistic}`;
   computerHeightButton.textContent = `Height: ${computerHeightStatistic}`;
 
+  
 
-  // compareStats(playerWeightStatistic, computerWeightStatistic);
-}
+};
 
 
 
@@ -125,38 +139,78 @@ function compareStats(chosenStat) {
   let playerStat = playerCharacter[chosenStat];
   let computerStat = computerCharacter[chosenStat];
 
-  console.log("playerStat:", playerStat);
-
   console.log("About to compare statistics...");
 
   if (playerStat > computerStat) {
     gameResult = "Player has won!";
+    playerScore += 1;
   } else if (playerStat < computerStat) {
     gameResult = "Computer has won!"
+    computerScore += 1;
   } else {
     gameResult = "It's a draw!";
   };
 
+  console.log("Player Score:", playerScore);
+  console.log("Computer Score:", computerScore);
+
+  showResult(gameResult);
+
+  updateScore(playerScore, computerScore);
+
+  if( playerScore >= 5 || computerScore >= 5 ) {
+    setGameDisabled(true);
+  };
+
+};
+
+function setGameDisabled(state) {
+  const statButtons = document.querySelectorAll(".stat-btn");
+  statButtons.forEach(btn => btn.disabled = state);
+
+  const drawButton = document.getElementById("draw-btn");
+  drawButton.disabled = state;
+}
+
+function resetCards() {
+
+  console.log("resetting the cards");
+
+  playerCard.classList.add("flipped");
+  computerCard.classList.add("flipped");
+  result.textContent = "";
+}
+
+
+
+function showResult(gameResult) {
+
   console.log("result:", gameResult);
   result.textContent = gameResult;
 
-  // what each stat button calls
-  //compares who won
-  // showResult()
+  computerCard.classList.remove("flipped")
 
-  // updateScrore()
 };
 
-function showResult(result) {
-  // reveal card
-  // display result 
+function updateScore(playerScore, computerScore) {
+
+  console.log("reveal score");
+
+  scoreBoard.textContent = `${playerScore} - ${computerScore}`;
+
+  checkWinner(playerScore, computerScore);
 };
 
-function updateScore() {
-  // increments scrore variable and updates display
-  // checkWinner()
-};
+function checkWinner(playerScore, computerScore) {
+  console.log("checking if there is a winner!");
 
-function checkWinner() {
-  // checks first to 5
-}
+
+  if (playerScore >= 5) {
+    result.textContent = "Player has won overall!";
+  } else if (computerScore >= 5) {
+    result.textContent = "Computer has won overall!"
+  } else {
+    return;
+  };
+
+};
