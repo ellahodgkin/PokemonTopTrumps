@@ -8,11 +8,15 @@ let playerCharacter = [];
 let computerCharacter = [];
 let chosenStat = "";
 
+let gameState = "idle";
+
 let playerScore = 0;
 let computerScore = 0;
 
 
 console.log("JS file is connected!");
+
+// GET ELEMENTS
 
 const playerCard = document.getElementById("player");
 const computerCard = document.getElementById("computer");
@@ -30,12 +34,22 @@ const result = document.getElementById("result");
 
 const scoreBoard = document.getElementById("score-board");
 
-//const statButton = document.getElementsByClassName("stat-btn");
+// BUTTONS
+
+const startButton = document.getElementById("start-game");
+const drawButton = document.getElementById("draw-card");
+const endButton = document.getElementById("end-game");
+const againButton = document.getElementById("play-again");
+
+// SET INITIAL PLAY STATE 
 
 playerCard.classList.add("flipped");
 computerCard.classList.add("flipped");
 
+loadCharacters();
 
+// LOAD API
+// SET UP GAME
 async function loadCharacters() {
   try {
     let URL = 'https://pokeapi.co/api/v2/pokemon?limit=200';
@@ -62,18 +76,15 @@ async function loadCharacters() {
   };
 };
 
-loadCharacters();
-
+// EVENT LISTENERS FOR BUTTONS
+// CHOSEN STAT ALLOCATION
 
 function setUpGame() {
 
-  const drawButton = document.getElementById("draw-btn");
-  drawButton.addEventListener('click', drawCards);
+  updateUI();
+  setGameDisabled(true);
 
   const statButton = document.querySelectorAll("#player .stat-btn");
-
-  console.log("stat button:", statButton);
-  // node list of buttons
 
   statButton.forEach( btn => {
     btn.addEventListener('click', () => {
@@ -82,8 +93,71 @@ function setUpGame() {
     });
   });
 
+  startButton.addEventListener("click", startGame);
+  drawButton.addEventListener("click", drawCards);
+  endButton.addEventListener("click", endGame);
+  againButton.addEventListener("click", resetGame);
+
 };
 
+function startGame() {
+
+  gameState = "playing";
+
+  playerScore = 0;
+  computerScore = 0;
+
+  updateScore(playerScore, computerScore);
+  setGameDisabled(false);
+
+  console.log("Game started");
+
+  updateUI();
+
+};
+
+
+function resetGame() {
+  gameState = "idle";
+
+  playerScore = 0;
+  computerScore = 0;
+
+  scoreBoard.textContent = "0 - 0";
+  result.textContent = "";
+
+  setGameDisabled(true);
+
+  console.log("Game reset");
+
+  updateUI();
+}
+
+
+// UPDATE USER INTERFACE
+
+function updateUI() {
+  if (gameState === "idle") {
+    startButton.style.display = "block";
+    drawButton.style.display = "none";
+    endButton.style.display = "none";
+    againButton.style.display = "none";
+  } else if (gameState === "playing") {
+    startButton.style.display = "none";
+    drawButton.style.display = "block";
+    endButton.style.display = "block";
+    againButton.style.display = "none"; 
+  } else if (gameState === "finished") {
+    startButton.style.display = "none";
+    drawButton.style.display = "none";
+    endButton.style.display = "none";
+    againButton.style.display = "block";
+  };
+};
+
+
+
+// GENERATE A RANDOM CHARACTER
 
 function randomCharacter () {
   let randomChar;
@@ -100,8 +174,11 @@ function randomCharacter () {
   }
 };
 
+// ALLOCATES CHARACTER, FLIPS CARD
 
 function drawCards() {
+
+  if (gameState !== "playing") return;
 
   resetCards();
 
@@ -127,14 +204,15 @@ function drawCards() {
   computerName.textContent = computerCharacter.name;
   computerWeightButton.textContent = `Weight: ${computerWeightStatistic}`;
   computerHeightButton.textContent = `Height: ${computerHeightStatistic}`;
-
-  
-
 };
 
 
+// THIS IS CALLED IN SET UP GAME, CHOSEN STAT COMPARISON,
+// CALLS SHOWRESULT, UPDATESCORE, DISABLES GAME
 
 function compareStats(chosenStat) {
+
+  if (gameState !== "playing") return;
 
   let playerStat = playerCharacter[chosenStat];
   let computerStat = computerCharacter[chosenStat];
@@ -159,16 +237,18 @@ function compareStats(chosenStat) {
   updateScore(playerScore, computerScore);
 
   if( playerScore >= 5 || computerScore >= 5 ) {
-    setGameDisabled(true);
+    endGame();
   };
 
 };
+
+
+// DISABLES GAME BUTTONS
 
 function setGameDisabled(state) {
   const statButtons = document.querySelectorAll(".stat-btn");
   statButtons.forEach(btn => btn.disabled = state);
 
-  const drawButton = document.getElementById("draw-btn");
   drawButton.disabled = state;
 }
 
@@ -181,7 +261,7 @@ function resetCards() {
   result.textContent = "";
 }
 
-
+// DISPLAYS RESULT, FLIPS COMPUTER CARD
 
 function showResult(gameResult) {
 
@@ -192,25 +272,42 @@ function showResult(gameResult) {
 
 };
 
+// UPDATE SCOREBOARD, CHECK IF THERE'S A WINNER
+
 function updateScore(playerScore, computerScore) {
 
   console.log("reveal score");
 
   scoreBoard.textContent = `${playerScore} - ${computerScore}`;
 
-  checkWinner(playerScore, computerScore);
 };
+
+
+function endGame() {
+  gameState = "finished";
+
+  setGameDisabled(true);
+
+  checkWinner(playerScore, computerScore);
+
+  console.log("Game ended");
+
+  updateUI();
+};
+
+
+
+// CHECK IF SCORE IS AT 5 FOR EITHER 
 
 function checkWinner(playerScore, computerScore) {
   console.log("checking if there is a winner!");
 
-
-  if (playerScore >= 5) {
+  if (playerScore > computerScore) {
     result.textContent = "Player has won overall!";
-  } else if (computerScore >= 5) {
-    result.textContent = "Computer has won overall!"
+  } else if (computerScore > playerScore) {
+    result.textContent = "Computer has won overall!";
   } else {
-    return;
+    result.textContent = "It is a draw overall!";
   };
 
 };
