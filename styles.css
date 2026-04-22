@@ -12,8 +12,10 @@ body {
     text-align: center;
 }
 
-#draw-btn {
-    display: block;
+.game-controls {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
     margin: 20px auto;
     font-size: 15px;
     border: 2px solid;
@@ -22,7 +24,7 @@ body {
     background-color: aliceblue;
 }
 
-#draw-btn:hover {
+.game-controls:hover {
     transform: scale(1.02);
     cursor: pointer;
     
